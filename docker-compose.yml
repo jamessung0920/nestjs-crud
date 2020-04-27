@@ -1,24 +1,25 @@
 version: '2'
 services:
-  # database:
-  #   image: mysql:5.6
-  #   container_name: ${PRJ}-mysql-${ENV}
-  #   volumes:
-  #     - ./mysql:/var/lib/mysql
-  #   environment:
-  #     - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-  #     - "MYSQL_USER=${MYSQL_USER}"
-  #     - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-  #     - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-  #   ports:
-  #     - ${DB_PORT}:3306
-
+  db:
+    image: mysql:5.6
+    container_name: ${PRJ}-mysql-${ENV}
+    volumes:
+      - ./services/mysql/data:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    ports:
+      - ${DB_PORT}:3306
   api:
     build:
       context: ./
       dockerfile: services/node/Dockerfile
     image: node:customize
     container_name: ${PRJ}-api-${ENV}
+    depends_on:
+      - db
     volumes:
       - ./www/nestjs-project/:/usr/src/app
       # - /usr/src/app/node_modules
@@ -26,13 +27,9 @@ services:
       - ${NODE_PORT}:3000
     environment:
       # - REDIS_URL=redis://cache
-      - NODE_ENV=local
+      - NODE_ENV=${ENV}
       # - PORT=3000
-    stdin_open: true
-    tty: true
+    # stdin_open: true
+    # tty: true
     # command:
     #   npm start:dev
-
-
-volumes:
-  dbdata:
