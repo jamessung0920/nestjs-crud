@@ -22,7 +22,7 @@ services:
       - db
     volumes:
       - ./www/nestjs-project/:/usr/src/app
-      # - /usr/src/app/node_modules
+      - /usr/src/app/node_modules
     ports:
       - ${NODE_PORT}:3000
     environment:

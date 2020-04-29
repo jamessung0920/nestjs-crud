@@ -1,30 +1,27 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeUpdate } from 'typeorm';
+import { Transform } from "class-transformer";
 
-@Entity()
+@Entity({name: "posts"})
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Transform(value => value.toUpperCase(), { toPlainOnly: true })
   @Column()
   title: string;
 
   @Column()
   content: string;
 
-  @Column()
+  @Column({ default: 'unknown' })
   author: string;
 
   @Column({ default: true })
   isViewable: boolean;
+ 
+  @Column({ type: 'timestamp', name: 'created_at'})
+  createdAt: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at'})
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at'})
-  updatedAt: Date;
-
-  @BeforeUpdate()
-  updateTimestamp() {
-    this.updatedAt = new Date;
-  }
+  @Column({ type: 'timestamp', name: 'updated_at'})
+  updatedAt: string;
 }
